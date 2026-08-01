@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "breadboarding": {
+      "source": "rjs/shaping-skills",
+      "sourceType": "github",
+      "skillPath": "breadboarding/SKILL.md",
+      "computedHash": "56a35d17a9bc1278e21185bfab8afe27a395b62d792275d9b46454c0dd76a220"
+    },
+    "define-goal": {
+      "source": "openai/skills",
+      "sourceType": "github",
+      "skillPath": "skills/.curated/define-goal/SKILL.md",
+      "computedHash": "0fab24178b759e1ebedc894f524d32fd3e580b55455cfeb459ea39a9cf4927c2"
+    },
+    "shaping": {
+      "source": "rjs/shaping-skills",
+      "sourceType": "github",
+      "skillPath": "shaping/SKILL.md",
+      "computedHash": "57a68732d5c1d8eecd9d8c6339f259231c2f9e55b31f5ae350f1fbb4795f1422"
+    }
+  }
+}

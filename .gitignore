@@ -1,0 +1,33 @@
+# dependencies & build (Next.js app in todo/)
+todo/node_modules/
+todo/.next/
+todo/out/
+todo/build/
+todo/coverage/
+
+# env & secrets
+.env
+.env.*
+!.env.example
+todo/.env
+todo/.env.*
+
+# debug & misc
+*.pem
+.DS_Store
+*.tsbuildinfo
+todo/next-env.d.ts
+.vercel
+
+# npm / yarn logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# accidental local skill cache clone
+~/
+
+# OS / editor
+Thumbs.db
+*.swp
