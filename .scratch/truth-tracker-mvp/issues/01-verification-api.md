@@ -6,9 +6,9 @@
 
 **Status:** ready-for-agent
 
-- [ ] `POST /api/verify` acepta `{ transcript?, audioBase64?, reelUrl? }` y responde con `VerificationReport` según spec
-- [ ] Ruta texto: guión San Miguel produce las cinco secciones pobladas; afirmaciones sin fuentes van a `sin_evidencia`, no detienen el informe
-- [ ] Ruta audio: `audioBase64` se transcribe vía Deepgram (español) y continúa el mismo pipeline
-- [ ] Body vacío o inválido devuelve 400 con mensaje claro
-- [ ] Tests de integración mockean Deepgram, Tavily y Anthropic; assert sobre forma del JSON, no prompts internos
+- [x] `POST /api/verify` acepta `{ transcript?, audioBase64?, reelUrl? }` y responde con `VerificationReport` según spec
+- [x] Ruta texto: guión San Miguel produce las cinco secciones pobladas; afirmaciones sin fuentes van a `sin_evidencia`, no detienen el informe
+- [x] Ruta audio: `audioBase64` se transcribe vía Deepgram (español) y continúa el mismo pipeline
+- [x] Body vacío o inválido devuelve 400 con mensaje claro
+- [x] Tests de integración mockean Deepgram, Tavily y Anthropic; assert sobre forma del JSON, no prompts internos
 - [ ] Demo verificable: `curl` con transcript San Miguel → 200 + JSON válido en ≤ 90 s (con APIs reales en dev)
