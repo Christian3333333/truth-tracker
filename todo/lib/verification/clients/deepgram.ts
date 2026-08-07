@@ -19,6 +19,7 @@ export function createDeepgramTranscriptionClient(
     async transcribe(audioBase64) {
       const audioBuffer = Buffer.from(audioBase64, "base64");
 
+      // Caller should send WAV (or another format Deepgram accepts) as base64.
       const response = await fetch(
         "https://api.deepgram.com/v1/listen?language=es&model=nova-2&smart_format=true",
         {

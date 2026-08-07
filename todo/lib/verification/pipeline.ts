@@ -1,6 +1,5 @@
 import type {
   ClassifyInput,
-  SearchHit,
   VerificationDeps,
   VerificationReport,
 } from "@/lib/verification/types";
@@ -44,16 +43,6 @@ export async function runVerification(
   });
 
   return verificationReportSchema.parse(report);
-}
-
-export function createMockSearchHits(query: string): SearchHit[] {
-  return [
-    {
-      title: `Resultado para ${query}`,
-      url: "https://example.com/search",
-      content: "Evidencia simulada.",
-    },
-  ];
 }
 
 export type { ClassifyInput, VerificationDeps, VerificationReport };

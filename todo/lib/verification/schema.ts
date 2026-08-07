@@ -38,7 +38,7 @@ export const verifyRequestSchema = z
   .object({
     transcript: z.string().optional(),
     audioBase64: z.string().optional(),
-    reelUrl: z.string().url().optional(),
+    reelUrl: z.string().optional(),
   })
   .refine(
     (body) =>

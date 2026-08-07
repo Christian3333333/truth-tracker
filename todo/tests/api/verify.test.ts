@@ -60,6 +60,21 @@ describe("POST /api/verify", () => {
     expect(blankResponse.status).toBe(400);
   });
 
+  it("returns 400 for invalid JSON body", async () => {
+    const POST = createVerifyHandler(() => createMockDeps());
+    const request = new NextRequest("http://localhost:3000/api/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{not-json",
+    });
+
+    const response = await POST(request);
+    expect(response.status).toBe(400);
+    expect(await response.json()).toMatchObject({
+      error: expect.stringContaining("JSON"),
+    });
+  });
+
   it("returns VerificationReport with all sections for San Miguel transcript", async () => {
     const deps = createMockDeps();
     const POST = createVerifyHandler(() => deps);
@@ -85,6 +100,13 @@ describe("POST /api/verify", () => {
 
     expect(deps.extractClaims).toHaveBeenCalledWith(SAN_MIGUEL_TRANSCRIPT);
     expect(deps.classifyReport).toHaveBeenCalledOnce();
+
+    expect(
+      report.sin_evidencia.some((item: { afirmacion: string }) =>
+        item.afirmacion.toLowerCase().includes("venezol"),
+      ),
+    ).toBe(true);
+    expect(report.selectiva.explicacion).toMatch(/[áéíóúñ]/i);
   });
 
   it("transcribes audio via Deepgram path when transcript is absent", async () => {

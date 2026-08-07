@@ -24,6 +24,12 @@ foreach ($section in $sections) {
   }
 }
 Write-Host "OK — all five sections present"
+if ($response.correcta.Count -lt 1 -or $response.falsa.Count -lt 1 -or $response.sin_evidencia.Count -lt 1) {
+  throw "Expected populated correcta, falsa, and sin_evidencia arrays"
+}
+if ($response.analisis_medidas.medidas_propuestas.Count -lt 1) {
+  throw "Expected analisis_medidas.medidas_propuestas to be populated"
+}
 $response | ConvertTo-Json -Depth 6
 
 if ($elapsed -gt 90) {

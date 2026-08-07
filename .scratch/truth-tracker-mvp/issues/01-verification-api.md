@@ -11,4 +11,4 @@
 - [x] Ruta audio: `audioBase64` se transcribe vía Deepgram (español) y continúa el mismo pipeline
 - [x] Body vacío o inválido devuelve 400 con mensaje claro
 - [x] Tests de integración mockean Deepgram, Tavily y Anthropic; assert sobre forma del JSON, no prompts internos
-- [ ] Demo verificable: `curl` con transcript San Miguel → 200 + JSON válido en ≤ 90 s (con APIs reales en dev)
+- [x] Demo verificable: `curl` con transcript San Miguel → 200 + JSON válido en ≤ 90 s (con APIs reales en dev) — ver `npm run demo:verify` en `todo/`
