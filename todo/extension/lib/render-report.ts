@@ -24,6 +24,17 @@ function sourceLink(label: string, url?: string): string {
   return `<a class="tt-source" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${safeLabel}</a>`;
 }
 
+function sectionHeading(
+  category: string,
+  label: string,
+  badgeClass: string,
+): string {
+  return `<div class="tt-section-heading">
+    <span class="tt-badge ${badgeClass}">${escapeHtml(category)}</span>
+    <h2>${escapeHtml(label)}</h2>
+  </div>`;
+}
+
 function renderCorrecta(items: CorrectClaim[]): string {
   const rows = items
     .map(
@@ -34,7 +45,10 @@ function renderCorrecta(items: CorrectClaim[]): string {
       </article>`,
     )
     .join("");
-  return `<section class="tt-section"><h2>Correcta</h2>${rows || "<p>Ninguna</p>"}</section>`;
+  return `<section class="tt-section tt-section--correcta" data-tt-category="correcta">
+    ${sectionHeading("Correcta", "Información correcta", "tt-badge--correcta")}
+    ${rows || '<p class="tt-empty">Ninguna</p>'}
+  </section>`;
 }
 
 function renderFalsa(items: FalseClaim[]): string {
@@ -48,7 +62,10 @@ function renderFalsa(items: FalseClaim[]): string {
       </article>`,
     )
     .join("");
-  return `<section class="tt-section"><h2>Falsa</h2>${rows || "<p>Ninguna</p>"}</section>`;
+  return `<section class="tt-section tt-section--falsa" data-tt-category="falsa">
+    ${sectionHeading("Falsa", "Información falsa", "tt-badge--falsa")}
+    ${rows || '<p class="tt-empty">Ninguna</p>'}
+  </section>`;
 }
 
 function renderSinEvidencia(items: UnverifiableClaim[]): string {
@@ -61,12 +78,15 @@ function renderSinEvidencia(items: UnverifiableClaim[]): string {
       </article>`,
     )
     .join("");
-  return `<section class="tt-section"><h2>Sin evidencia</h2>${rows || "<p>Ninguna</p>"}</section>`;
+  return `<section class="tt-section tt-section--sin-evidencia" data-tt-category="sin_evidencia">
+    ${sectionHeading("Sin evidencia", "Sin evidencia verificable", "tt-badge--sin-evidencia")}
+    ${rows || '<p class="tt-empty">Ninguna</p>'}
+  </section>`;
 }
 
 function renderSelectiva(selectiva: SelectiveAnalysis): string {
-  return `<section class="tt-section">
-    <h2>Selectiva</h2>
+  return `<section class="tt-section tt-section--selectiva" data-tt-category="selectiva">
+    ${sectionHeading("Selectiva", "Selectividad", "tt-badge--selectiva")}
     <p class="tt-claim-text"><strong>${escapeHtml(selectiva.resultado)}</strong></p>
     <p class="tt-claim-meta">${escapeHtml(selectiva.explicacion)}</p>
   </section>`;
@@ -85,21 +105,24 @@ function renderMedidas(analisis: MeasuresAnalysis): string {
     .map((m) => `<li>${escapeHtml(m)}</li>`)
     .join("");
   const fuentes = analisis.fuentes.map(measureSourceItem).join("");
-  return `<section class="tt-section">
-    <h2>Análisis de medidas</h2>
-    <ul>${medidas}</ul>
+  return `<section class="tt-section tt-section--medidas" data-tt-category="analisis_medidas">
+    ${sectionHeading("Medidas", "Análisis de medidas", "tt-badge--medidas")}
+    <ul class="tt-list">${medidas}</ul>
     <p class="tt-claim-text">Efectivas: ${analisis.efectivas ? "Sí" : "No"}</p>
     <p class="tt-claim-meta">${escapeHtml(analisis.razon)}</p>
     <p class="tt-claim-meta">Fuentes:</p>
-    <ul>${fuentes}</ul>
+    <ul class="tt-list tt-list--sources">${fuentes}</ul>
   </section>`;
 }
 
-/** Builds inner HTML for the Instagram side panel (P3). */
+/** Builds inner HTML for the Instagram side panel (P3 / Soft Atelier Glow). */
 export function buildSidePanelHtml(report: VerificationReport): string {
   return `
     <header class="tt-panel-header">
-      <h1>Truth Tracker</h1>
+      <h1 class="tt-brand">
+        <span class="tt-brand-strong">Truth</span>
+        <span class="tt-brand-mid">Tracker</span>
+      </h1>
       <button type="button" class="tt-close" data-tt-close="true" aria-label="Cerrar">Cerrar</button>
     </header>
     <div class="tt-panel-body">

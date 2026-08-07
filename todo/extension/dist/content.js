@@ -9,6 +9,12 @@ function sourceLink(label, url) {
   }
   return `<a class="tt-source" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${safeLabel}</a>`;
 }
+function sectionHeading(category, label, badgeClass) {
+  return `<div class="tt-section-heading">
+    <span class="tt-badge ${badgeClass}">${escapeHtml(category)}</span>
+    <h2>${escapeHtml(label)}</h2>
+  </div>`;
+}
 function renderCorrecta(items) {
   const rows = items.map(
     (item) => `
@@ -17,7 +23,10 @@ function renderCorrecta(items) {
         <p class="tt-claim-meta">Fuente: ${sourceLink(item.fuente, item.url)}</p>
       </article>`
   ).join("");
-  return `<section class="tt-section"><h2>Correcta</h2>${rows || "<p>Ninguna</p>"}</section>`;
+  return `<section class="tt-section tt-section--correcta" data-tt-category="correcta">
+    ${sectionHeading("Correcta", "Informaci\xF3n correcta", "tt-badge--correcta")}
+    ${rows || '<p class="tt-empty">Ninguna</p>'}
+  </section>`;
 }
 function renderFalsa(items) {
   const rows = items.map(
@@ -28,7 +37,10 @@ function renderFalsa(items) {
         <p class="tt-claim-meta">Fuente: ${sourceLink(item.fuente, item.url)}</p>
       </article>`
   ).join("");
-  return `<section class="tt-section"><h2>Falsa</h2>${rows || "<p>Ninguna</p>"}</section>`;
+  return `<section class="tt-section tt-section--falsa" data-tt-category="falsa">
+    ${sectionHeading("Falsa", "Informaci\xF3n falsa", "tt-badge--falsa")}
+    ${rows || '<p class="tt-empty">Ninguna</p>'}
+  </section>`;
 }
 function renderSinEvidencia(items) {
   const rows = items.map(
@@ -38,11 +50,14 @@ function renderSinEvidencia(items) {
         <p class="tt-claim-meta">${escapeHtml(item.nota)}</p>
       </article>`
   ).join("");
-  return `<section class="tt-section"><h2>Sin evidencia</h2>${rows || "<p>Ninguna</p>"}</section>`;
+  return `<section class="tt-section tt-section--sin-evidencia" data-tt-category="sin_evidencia">
+    ${sectionHeading("Sin evidencia", "Sin evidencia verificable", "tt-badge--sin-evidencia")}
+    ${rows || '<p class="tt-empty">Ninguna</p>'}
+  </section>`;
 }
 function renderSelectiva(selectiva) {
-  return `<section class="tt-section">
-    <h2>Selectiva</h2>
+  return `<section class="tt-section tt-section--selectiva" data-tt-category="selectiva">
+    ${sectionHeading("Selectiva", "Selectividad", "tt-badge--selectiva")}
     <p class="tt-claim-text"><strong>${escapeHtml(selectiva.resultado)}</strong></p>
     <p class="tt-claim-meta">${escapeHtml(selectiva.explicacion)}</p>
   </section>`;
@@ -57,19 +72,22 @@ function measureSourceItem(value) {
 function renderMedidas(analisis) {
   const medidas = analisis.medidas_propuestas.map((m) => `<li>${escapeHtml(m)}</li>`).join("");
   const fuentes = analisis.fuentes.map(measureSourceItem).join("");
-  return `<section class="tt-section">
-    <h2>An\xE1lisis de medidas</h2>
-    <ul>${medidas}</ul>
+  return `<section class="tt-section tt-section--medidas" data-tt-category="analisis_medidas">
+    ${sectionHeading("Medidas", "An\xE1lisis de medidas", "tt-badge--medidas")}
+    <ul class="tt-list">${medidas}</ul>
     <p class="tt-claim-text">Efectivas: ${analisis.efectivas ? "S\xED" : "No"}</p>
     <p class="tt-claim-meta">${escapeHtml(analisis.razon)}</p>
     <p class="tt-claim-meta">Fuentes:</p>
-    <ul>${fuentes}</ul>
+    <ul class="tt-list tt-list--sources">${fuentes}</ul>
   </section>`;
 }
 function buildSidePanelHtml(report) {
   return `
     <header class="tt-panel-header">
-      <h1>Truth Tracker</h1>
+      <h1 class="tt-brand">
+        <span class="tt-brand-strong">Truth</span>
+        <span class="tt-brand-mid">Tracker</span>
+      </h1>
       <button type="button" class="tt-close" data-tt-close="true" aria-label="Cerrar">Cerrar</button>
     </header>
     <div class="tt-panel-body">

@@ -3,13 +3,17 @@
   --tt-surface: #ffffff;
   --tt-ink: #1a1a1a;
   --tt-ink-secondary: #6b6b6b;
+  --tt-ink-tertiary: #a8a8a8;
   --tt-trust: #2d3748;
   --tt-glow: #ff85d1;
   --tt-glow-soft: #ffd4ec;
   --tt-sage: #4a7c6f;
   --tt-clay: #c45c4a;
-  --tt-serif: "Libre Baskerville", "Iowan Old Style", Georgia, serif;
-  --tt-sans: "DM Sans", "Segoe UI", sans-serif;
+  --tt-divider: #e8e8e4;
+  --tt-shadow-soft: 0 4px 24px rgba(26, 26, 26, 0.06);
+  --tt-radius-button: 12px;
+  --tt-serif: "Fraunces", "Libre Baskerville", "Iowan Old Style", Georgia, serif;
+  --tt-sans: "DM Sans", "Segoe UI", system-ui, sans-serif;
 }
 
 * {
@@ -18,35 +22,50 @@
 
 body {
   margin: 0;
-  width: 320px;
+  width: 360px;
   font-family: var(--tt-sans);
   color: var(--tt-trust);
   background: var(--tt-surface);
+  line-height: 1.5;
 }
 
 .popup-header {
-  padding: 1rem 1rem 0.75rem;
+  padding: 1.15rem 1.25rem 0.9rem;
   background: linear-gradient(
     180deg,
     var(--tt-glow) 0%,
     var(--tt-glow-soft) 12%,
-    var(--tt-surface) 42%
+    var(--tt-surface) 22%,
+    var(--tt-surface) 100%
   );
 }
 
 .popup-header h1 {
   margin: 0;
   font-family: var(--tt-serif);
-  font-size: 1.25rem;
-  color: var(--tt-ink);
+  font-size: 1.35rem;
   letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-feature-settings: "liga" 1;
+}
+
+.popup-brand-strong {
+  color: var(--tt-ink);
+  font-weight: 700;
+}
+
+.popup-brand-mid {
+  color: var(--tt-ink-secondary);
+  font-weight: 400;
+  margin-left: 0.25rem;
 }
 
 .popup-body {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding: 0.75rem 1rem 1rem;
+  padding: 1.5rem;
+  background: var(--tt-surface);
 }
 
 label {
@@ -58,18 +77,19 @@ label {
 }
 
 input {
-  border: 1px solid #e5e2dc;
-  border-radius: 10px;
-  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--tt-divider);
+  border-radius: var(--tt-radius-button);
+  padding: 0.6rem 0.75rem;
   font: inherit;
   color: var(--tt-ink);
-  background: var(--tt-canvas);
+  background: var(--tt-surface);
+  box-shadow: var(--tt-shadow-soft);
 }
 
 button {
   margin-top: 0.35rem;
   border: 0;
-  border-radius: 10px;
+  border-radius: var(--tt-radius-button);
   padding: 0.7rem 0.9rem;
   font: inherit;
   font-weight: 600;
@@ -85,21 +105,26 @@ button:disabled {
 
 #status {
   min-height: 1.2em;
-  margin: 0.25rem 0 0;
+  margin: 0.35rem 0 0;
+  padding: 0.45rem 0.55rem;
+  border-radius: 10px;
   font-size: 0.875rem;
   color: var(--tt-ink-secondary);
+  background: transparent;
 }
 
 #status[data-kind="loading"] {
   color: var(--tt-sage);
+  background: rgba(74, 124, 111, 0.1);
 }
 
 #status[data-kind="error"] {
   color: var(--tt-clay);
+  background: rgba(196, 92, 74, 0.1);
 }
 
 .popup-hint {
   margin: 0.25rem 0 0;
   font-size: 0.75rem;
-  color: var(--tt-ink-secondary);
+  color: var(--tt-ink-tertiary);
 }

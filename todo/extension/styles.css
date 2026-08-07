@@ -1,20 +1,28 @@
-:root {
+/* Soft Atelier Glow — tokens live on the isolated root (all: initial resets inheritance). */
+#truth-tracker-root {
+  all: initial;
   --tt-canvas: #fafaf8;
   --tt-surface: #ffffff;
   --tt-ink: #1a1a1a;
   --tt-ink-secondary: #6b6b6b;
+  --tt-ink-tertiary: #a8a8a8;
   --tt-trust: #2d3748;
+  --tt-lavender: #c8ccd8;
+  --tt-dusty-coral: #e8a598;
+  --tt-signal: #e85d4a;
   --tt-glow: #ff85d1;
   --tt-glow-soft: #ffd4ec;
   --tt-sage: #4a7c6f;
   --tt-clay: #c45c4a;
-  --tt-serif: "Libre Baskerville", "Iowan Old Style", Georgia, serif;
-  --tt-sans: "DM Sans", "Segoe UI", sans-serif;
-}
-
-#truth-tracker-root {
-  all: initial;
+  --tt-divider: #e8e8e4;
+  --tt-shadow-soft: 0 4px 24px rgba(26, 26, 26, 0.06);
+  --tt-radius-card: 16px;
+  --tt-radius-button: 12px;
+  --tt-radius-pill: 999px;
+  --tt-serif: "Fraunces", "Libre Baskerville", "Iowan Old Style", Georgia, serif;
+  --tt-sans: "DM Sans", "Segoe UI", system-ui, sans-serif;
   font-family: var(--tt-sans);
+  color: var(--tt-trust);
 }
 
 .tt-status {
@@ -24,10 +32,10 @@
   bottom: 5.5rem;
   max-width: 280px;
   padding: 0.75rem 1rem;
-  border-radius: 12px;
+  border-radius: var(--tt-radius-button);
   background: var(--tt-surface);
   color: var(--tt-trust);
-  box-shadow: 0 8px 24px rgba(26, 26, 26, 0.12);
+  box-shadow: var(--tt-shadow-soft), 0 8px 24px rgba(26, 26, 26, 0.08);
   font-size: 0.875rem;
   line-height: 1.4;
 }
@@ -46,7 +54,7 @@
   right: 1.25rem;
   bottom: 1.25rem;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--tt-radius-pill);
   padding: 0.85rem 1.15rem;
   font-family: var(--tt-sans);
   font-size: 0.9rem;
@@ -91,12 +99,13 @@
 .tt-modal {
   width: min(440px, calc(100vw - 2rem));
   padding: 1.25rem;
-  border-radius: 16px;
+  border-radius: var(--tt-radius-card);
   background: linear-gradient(
       180deg,
       var(--tt-glow) 0%,
-      var(--tt-glow-soft) 10%,
-      var(--tt-surface) 28%
+      var(--tt-glow-soft) 12%,
+      var(--tt-surface) 22%,
+      var(--tt-surface) 100%
     ),
     var(--tt-surface);
   color: var(--tt-trust);
@@ -107,6 +116,7 @@
   margin: 0 0 0.35rem;
   font-family: var(--tt-serif);
   font-size: 1.35rem;
+  font-feature-settings: "liga" 1;
   color: var(--tt-ink);
 }
 
@@ -119,8 +129,8 @@
 .tt-modal textarea {
   width: 100%;
   resize: vertical;
-  border: 1px solid #e5e2dc;
-  border-radius: 12px;
+  border: 1px solid var(--tt-divider);
+  border-radius: var(--tt-radius-button);
   padding: 0.75rem;
   font: inherit;
   color: var(--tt-ink);
@@ -136,7 +146,7 @@
 
 .tt-btn {
   border: 0;
-  border-radius: 10px;
+  border-radius: var(--tt-radius-button);
   padding: 0.6rem 0.9rem;
   font: inherit;
   font-weight: 600;
@@ -165,32 +175,49 @@
   color: var(--tt-trust);
   box-shadow: -12px 0 40px rgba(26, 26, 26, 0.15);
   font-family: var(--tt-sans);
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 .tt-panel-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1.1rem 1.1rem 0.85rem;
+  padding: 1.25rem 1.25rem 1rem;
   background: linear-gradient(
     180deg,
     var(--tt-glow) 0%,
-    var(--tt-glow-soft) 14%,
-    var(--tt-surface) 48%
+    var(--tt-glow-soft) 12%,
+    var(--tt-surface) 22%,
+    var(--tt-surface) 100%
   );
 }
 
-.tt-panel-header h1 {
+.tt-brand {
   margin: 0;
   font-family: var(--tt-serif);
   font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  font-feature-settings: "liga" 1;
+}
+
+.tt-brand-strong {
   color: var(--tt-ink);
+  font-weight: 700;
+}
+
+.tt-brand-mid {
+  color: var(--tt-ink-secondary);
+  font-weight: 400;
+  margin-left: 0.25rem;
 }
 
 .tt-close {
   border: 0;
-  border-radius: 8px;
+  border-radius: var(--tt-radius-button);
   padding: 0.4rem 0.65rem;
   font: inherit;
   font-size: 0.85rem;
@@ -200,27 +227,106 @@
 }
 
 .tt-panel-body {
-  padding: 0.5rem 1.1rem 1.5rem;
+  padding: 0.35rem 1.1rem 1.75rem;
+  background: var(--tt-surface);
 }
 
 .tt-section {
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
+  padding: 0.9rem 0.95rem;
+  border-radius: var(--tt-radius-card);
+  background: var(--tt-surface);
+  border: 1px solid var(--tt-divider);
+  border-left-width: 4px;
+  box-shadow: var(--tt-shadow-soft);
 }
 
-.tt-section h2 {
-  margin: 0 0 0.55rem;
-  font-family: var(--tt-serif);
-  font-size: 1.15rem;
+.tt-section--correcta {
+  border-left-color: var(--tt-sage);
+}
+
+.tt-section--falsa {
+  border-left-color: var(--tt-clay);
+}
+
+.tt-section--sin-evidencia {
+  border-left-color: var(--tt-lavender);
+}
+
+.tt-section--selectiva {
+  border-left-color: var(--tt-dusty-coral);
+}
+
+.tt-section--medidas {
+  border-left-color: var(--tt-trust);
+}
+
+.tt-section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.75rem;
+  margin-bottom: 0.7rem;
+}
+
+.tt-section-heading h2 {
+  margin: 0;
+  font-family: var(--tt-sans);
+  font-size: 1.05rem;
   font-weight: 600;
   letter-spacing: -0.01em;
-  text-transform: none;
+  line-height: 1.2;
   color: var(--tt-ink);
+}
+
+.tt-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--tt-radius-pill);
+  padding: 0.2rem 0.55rem;
+  font-family: var(--tt-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+
+.tt-badge--correcta {
+  color: #2f5349;
+  background: rgba(74, 124, 111, 0.16);
+}
+
+.tt-badge--falsa {
+  color: #7a342c;
+  background: rgba(196, 92, 74, 0.16);
+}
+
+.tt-badge--sin-evidencia {
+  color: #4f5566;
+  background: rgba(200, 204, 216, 0.55);
+}
+
+.tt-badge--selectiva {
+  color: #7a4a3f;
+  background: rgba(232, 165, 152, 0.35);
+}
+
+.tt-badge--medidas {
+  color: var(--tt-trust);
+  background: rgba(45, 55, 72, 0.1);
 }
 
 .tt-claim {
   margin-bottom: 0.75rem;
   padding-bottom: 0.75rem;
-  border-bottom: 1px solid #eeeae3;
+  border-bottom: 1px solid var(--tt-divider);
+}
+
+.tt-claim:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: 0;
 }
 
 .tt-claim-text {
@@ -236,9 +342,28 @@
   line-height: 1.45;
 }
 
+.tt-empty {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--tt-ink-tertiary);
+}
+
+.tt-list {
+  margin: 0 0 0.65rem;
+  padding-left: 1.15rem;
+  color: var(--tt-trust);
+}
+
+.tt-list--sources {
+  margin-bottom: 0;
+}
+
 .tt-source {
-  color: var(--tt-sage);
+  color: var(--tt-ink-secondary);
+  font-style: italic;
   text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-word;
 }
 
 a.tt-source:hover {
