@@ -1,0 +1,105 @@
+:root {
+  --tt-canvas: #fafaf8;
+  --tt-surface: #ffffff;
+  --tt-ink: #1a1a1a;
+  --tt-ink-secondary: #6b6b6b;
+  --tt-trust: #2d3748;
+  --tt-glow: #ff85d1;
+  --tt-glow-soft: #ffd4ec;
+  --tt-sage: #4a7c6f;
+  --tt-clay: #c45c4a;
+  --tt-serif: "Libre Baskerville", "Iowan Old Style", Georgia, serif;
+  --tt-sans: "DM Sans", "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 320px;
+  font-family: var(--tt-sans);
+  color: var(--tt-trust);
+  background: var(--tt-surface);
+}
+
+.popup-header {
+  padding: 1rem 1rem 0.75rem;
+  background: linear-gradient(
+    180deg,
+    var(--tt-glow) 0%,
+    var(--tt-glow-soft) 12%,
+    var(--tt-surface) 42%
+  );
+}
+
+.popup-header h1 {
+  margin: 0;
+  font-family: var(--tt-serif);
+  font-size: 1.25rem;
+  color: var(--tt-ink);
+  letter-spacing: -0.02em;
+}
+
+.popup-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem 1rem;
+}
+
+label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tt-ink-secondary);
+}
+
+input {
+  border: 1px solid #e5e2dc;
+  border-radius: 10px;
+  padding: 0.55rem 0.7rem;
+  font: inherit;
+  color: var(--tt-ink);
+  background: var(--tt-canvas);
+}
+
+button {
+  margin-top: 0.35rem;
+  border: 0;
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--tt-surface);
+  background: var(--tt-ink);
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+#status {
+  min-height: 1.2em;
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: var(--tt-ink-secondary);
+}
+
+#status[data-kind="loading"] {
+  color: var(--tt-sage);
+}
+
+#status[data-kind="error"] {
+  color: var(--tt-clay);
+}
+
+.popup-hint {
+  margin: 0.25rem 0 0;
+  font-size: 0.75rem;
+  color: var(--tt-ink-secondary);
+}

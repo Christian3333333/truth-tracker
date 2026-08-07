@@ -42,6 +42,9 @@ export const SAN_MIGUEL_REPORT: VerificationReport = {
     efectivas: false,
     razon:
       "La evidencia muestra que más vigilancia sin reformas institucionales tiene efecto limitado sobre la extorsión organizada.",
-    fuentes: ["Estudio de políticas de seguridad urbana — Lima 2024"],
+    fuentes: [
+      "https://example.com/seguridad-urbana-lima-2024",
+      "Estudio de políticas de seguridad urbana — Lima 2024",
+    ],
   },
 };

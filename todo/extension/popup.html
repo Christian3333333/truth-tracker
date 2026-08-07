@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Truth Tracker</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="popup-header">
+      <h1>Truth Tracker</h1>
+    </header>
+    <main class="popup-body">
+      <label for="backend-url">URL del backend</label>
+      <input
+        id="backend-url"
+        type="url"
+        placeholder="http://localhost:3000"
+        autocomplete="off"
+      />
+      <button id="verify-btn" type="button">Verificar reel actual</button>
+      <p id="status" data-kind="idle"></p>
+      <p class="popup-hint">
+        El informe se abre en el panel lateral de Instagram, no aquí.
+      </p>
+    </main>
+    <script type="module" src="dist/popup.js"></script>
+  </body>
+</html>

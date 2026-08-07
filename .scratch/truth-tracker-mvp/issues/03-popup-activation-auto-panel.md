@@ -4,10 +4,10 @@
 
 **Blocked by:** 02 — Verificación manual en Instagram
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Popup: input URL backend (default localhost), botón "Verificar reel actual", estados loading/error
-- [ ] Activación desde popup dispara el mismo flujo de verificación que el content script
-- [ ] Al recibir informe, service worker notifica content script → panel lateral se abre y renderiza sin acción extra del usuario
-- [ ] `verificationReport` persiste entre service worker y content script (storage TBD: session o local)
-- [ ] Demo: activar verificación desde popup con guión manual → panel aparece solo al terminar
+- [x] Popup: input URL backend (default localhost), botón "Verificar reel actual", estados loading/error
+- [x] Activación desde popup dispara el mismo flujo de verificación que el content script
+- [x] Al recibir informe, service worker notifica content script → panel lateral se abre y renderiza sin acción extra del usuario
+- [x] `verificationReport` persiste entre service worker y content script (storage TBD: session o local)
+- [x] Demo: activar verificación desde popup con guión manual → panel aparece solo al terminar

@@ -4,11 +4,11 @@
 
 **Blocked by:** 01 — Verification API (texto + audio)
 
-**Status:** ready-for-agent
+**Status:** done
 
-- [ ] Extensión MV3 carga sin errores en Chrome (`manifest.json`, service worker, content script en instagram.com)
-- [ ] Modal bloqueante (P4): textarea + "Verificar texto" + cancelar
-- [ ] Service worker envía transcript al backend configurado y recibe `VerificationReport`
-- [ ] Panel lateral (P3) renderiza todas las secciones del informe; botón cerrar vuelve al reel
-- [ ] Estados loading y error visibles durante la verificación
-- [ ] Demo: pegar guión San Miguel en Instagram → panel con informe categorizado y fuentes
+- [x] Extensión MV3 carga sin errores en Chrome (`manifest.json`, service worker, content script en instagram.com)
+- [x] Modal bloqueante (P4): textarea + "Verificar texto" + cancelar
+- [x] Service worker envía transcript al backend configurado y recibe `VerificationReport`
+- [x] Panel lateral (P3) renderiza todas las secciones del informe; botón cerrar vuelve al reel
+- [x] Estados loading y error visibles durante la verificación
+- [x] Demo: pegar guión San Miguel en Instagram → panel con informe categorizado y fuentes

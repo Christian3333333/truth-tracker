@@ -1,0 +1,224 @@
+:root {
+  --tt-canvas: #fafaf8;
+  --tt-surface: #ffffff;
+  --tt-ink: #1a1a1a;
+  --tt-ink-secondary: #6b6b6b;
+  --tt-trust: #2d3748;
+  --tt-glow: #ff85d1;
+  --tt-glow-soft: #ffd4ec;
+  --tt-sage: #4a7c6f;
+  --tt-clay: #c45c4a;
+  --tt-serif: "Libre Baskerville", "Iowan Old Style", Georgia, serif;
+  --tt-sans: "DM Sans", "Segoe UI", sans-serif;
+}
+
+#truth-tracker-root {
+  all: initial;
+  font-family: var(--tt-sans);
+}
+
+.tt-status {
+  position: fixed;
+  z-index: 2147483646;
+  right: 1.25rem;
+  bottom: 5.5rem;
+  max-width: 280px;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: var(--tt-surface);
+  color: var(--tt-trust);
+  box-shadow: 0 8px 24px rgba(26, 26, 26, 0.12);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.tt-status[data-kind="loading"] {
+  color: var(--tt-sage);
+}
+
+.tt-status[data-kind="error"] {
+  color: var(--tt-clay);
+}
+
+.tt-fab {
+  position: fixed;
+  z-index: 2147483645;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.85rem 1.15rem;
+  font-family: var(--tt-sans);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--tt-surface);
+  background: var(--tt-ink);
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(255, 133, 209, 0.35);
+}
+
+.tt-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: grid;
+  place-items: center;
+  background: rgba(26, 26, 26, 0.45);
+}
+
+.tt-modal {
+  width: min(440px, calc(100vw - 2rem));
+  padding: 1.25rem;
+  border-radius: 16px;
+  background: linear-gradient(
+      180deg,
+      var(--tt-glow) 0%,
+      var(--tt-glow-soft) 10%,
+      var(--tt-surface) 28%
+    ),
+    var(--tt-surface);
+  color: var(--tt-trust);
+  box-shadow: 0 20px 50px rgba(26, 26, 26, 0.2);
+}
+
+.tt-modal h2 {
+  margin: 0 0 0.35rem;
+  font-family: var(--tt-serif);
+  font-size: 1.35rem;
+  color: var(--tt-ink);
+}
+
+.tt-modal-help {
+  margin: 0 0 0.85rem;
+  font-size: 0.875rem;
+  color: var(--tt-ink-secondary);
+}
+
+.tt-modal textarea {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid #e5e2dc;
+  border-radius: 12px;
+  padding: 0.75rem;
+  font: inherit;
+  color: var(--tt-ink);
+  background: var(--tt-canvas);
+}
+
+.tt-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+}
+
+.tt-btn {
+  border: 0;
+  border-radius: 10px;
+  padding: 0.6rem 0.9rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tt-btn-primary {
+  background: var(--tt-ink);
+  color: var(--tt-surface);
+}
+
+.tt-btn-secondary {
+  background: transparent;
+  color: var(--tt-ink-secondary);
+}
+
+.tt-side-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 2147483647;
+  width: min(400px, 92vw);
+  height: 100vh;
+  overflow: auto;
+  background: var(--tt-surface);
+  color: var(--tt-trust);
+  box-shadow: -12px 0 40px rgba(26, 26, 26, 0.15);
+  font-family: var(--tt-sans);
+}
+
+.tt-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.1rem 0.85rem;
+  background: linear-gradient(
+    180deg,
+    var(--tt-glow) 0%,
+    var(--tt-glow-soft) 14%,
+    var(--tt-surface) 48%
+  );
+}
+
+.tt-panel-header h1 {
+  margin: 0;
+  font-family: var(--tt-serif);
+  font-size: 1.4rem;
+  color: var(--tt-ink);
+}
+
+.tt-close {
+  border: 0;
+  border-radius: 8px;
+  padding: 0.4rem 0.65rem;
+  font: inherit;
+  font-size: 0.85rem;
+  background: rgba(26, 26, 26, 0.08);
+  color: var(--tt-ink);
+  cursor: pointer;
+}
+
+.tt-panel-body {
+  padding: 0.5rem 1.1rem 1.5rem;
+}
+
+.tt-section {
+  margin-bottom: 1.25rem;
+}
+
+.tt-section h2 {
+  margin: 0 0 0.55rem;
+  font-family: var(--tt-serif);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  color: var(--tt-ink);
+}
+
+.tt-claim {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #eeeae3;
+}
+
+.tt-claim-text {
+  margin: 0 0 0.35rem;
+  color: var(--tt-ink);
+  line-height: 1.45;
+}
+
+.tt-claim-meta {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--tt-ink-secondary);
+  line-height: 1.45;
+}
+
+.tt-source {
+  color: var(--tt-sage);
+  text-decoration: underline;
+}
+
+a.tt-source:hover {
+  color: var(--tt-ink);
+}
