@@ -140,7 +140,7 @@
 | Part | Mechanism           | Affordances                            |
 | ---- | ------------------- | -------------------------------------- |
 | A1   | Extension shell MV3        | U4–U7, N7–N10, N18, N30, S5           |
-| A2   | Script extraction          | N2–N5, N3⚠️, N4⚠️, U20–U22, P4, S1, S2 |
+| A2   | Script extraction          | N2–N5, N3, N4, U20–U22, P4, S1, S2 (spike A2 resuelto → `spike-instagram-extraction.md`) |
 | A3   | Activation                 | U1, U6, N1, N10                       |
 | A4   | Verification API           | N20–N24, S10–S13, S11                 |
 | A5   | STT Deepgram               | N21, N25, S20                         |
@@ -149,7 +149,7 @@
 | A8   | 🟡 Side panel informe      | P3, U14–U19, N14–N16, S3              |
 
 
-**Flagged unknowns (from shaping ⚠️):** N3 `~tryExtractCaptionsFromDOM`, N4 `~captureVideoAudioBlob` — mecanismo descrito, implementación pendiente de spike A2.
+**Spike A2 resuelto:** N3 `tryExtractCaptionsFromDOM` (heurística DOM/aria; frágil) y N4 captura de audio vía `tabCapture` + offscreen (no `video.captureStream` como primaria). Detalle y pasos V4 en `spike-instagram-extraction.md`.
 
 ---
 
@@ -313,7 +313,7 @@ Cada slice termina en UI demo-able.
 | --- | -------------------------------------------------------------------------------------------------- | -------------- |
 | Q1  | ¿Popup permanece abierto durante verificación (~90 s) mostrando solo loading, o se cierra y el panel notifica? | U7, N9         |
 | Q2  | ¿Side panel bloquea interacción con el reel (Place) o es semi-transparente overlay?                             | P3 containment |
-| Q3  | 🟡 ¿`chrome.storage.session` vs `local` para S3 entre service worker y content script?                           | N8, N18, N15   |
+| Q3  | ✅ `chrome.storage.session` para S3 (`verificationReport`) entre service worker y content script                 | N8, N18, N15   |
 
 
 ---

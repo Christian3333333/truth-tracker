@@ -80,10 +80,10 @@ Extensión MV3 extrae guión → backend Next.js (STT + búsqueda + LLM) → pan
 | A1.2   | Service worker: routing de mensajes extensión ↔ content script ↔ backend                   |      |
 | A1.3   | Config: URL del backend (`localhost` Fase 1)                                               |      |
 | **A2** | **Script extraction (content script)**                                                     |      |
-| A2.1   | Detectar reel activo en DOM de Instagram                                                   | ⚠️   |
-| A2.2   | Leer captions/subtítulos del DOM si están expuestos                                        | ⚠️   |
-| A2.3   | Si no hay captions: capturar audio del `<video>` → blob → enviar al backend                | ⚠️   |
-| A2.4   | Fallback UI: campo para pegar guión manual si A2.2 y A2.3 fallan                           |      |
+| A2.1   | Detectar reel activo en DOM de Instagram                                                   | ✅ spike |
+| A2.2   | Leer captions/subtítulos del DOM si están expuestos                                        | ✅ spike |
+| A2.3   | Si no hay captions: capturar audio vía `tabCapture` + offscreen → blob → backend (no `video.captureStream` primario) | ✅ spike |
+| A2.4   | Fallback UI: campo para pegar guión manual si A2.2 y A2.3 fallan                           | ✅     |
 | **A3** | **Activation affordances**                                                                 |      |
 | A3.1   | Botón flotante "Verificar" inyectado junto al reel                                         |      |
 | A3.2   | Acción equivalente en popup de la extensión ("Verificar reel actual")                      |      |
@@ -115,8 +115,8 @@ Extensión llama directo a Deepgram, Tavily y Anthropic; sin backend propio.
 
 | Part   | Mechanism                                                    | Flag |
 | ------ | ------------------------------------------------------------ | ---- |
-| **B1** | **Extension shell + extraction**                             | ⚠️   |
-| B1.1   | Misma extracción que A2                                      | ⚠️   |
+| **B1** | **Extension shell + extraction**                             | ✅ spike |
+| B1.1   | Misma extracción que A2                                      | ✅ spike |
 | **B2** | **API keys en extensión**                                    |      |
 | B2.1   | Usuario configura keys en popup settings                     |      |
 | B2.2   | Llamadas fetch directas a APIs externas desde service worker |      |
@@ -228,7 +228,7 @@ Sin extracción automática; usuario pega guión; backend verifica.
 | A2-Q4 | ¿Cuál es el fallback mínimo viable si Instagram bloquea ambos?                  |
 
 
-**Acceptance:** Podemos describir los pasos concretos para implementar A2.1–A2.3 o confirmar que solo A2.4 es viable.
+**Acceptance:** ✅ Resuelto en `spike-instagram-extraction.md` — pasos concretos para A2.1–A2.3; A2.4 confirmado como fallback MVP.
 
 ---
 
@@ -273,7 +273,7 @@ Sin extracción automática; usuario pega guión; backend verifica.
 | Shape selected          | ✅ A                        |
 | Fit check passes (no ❌) | ❌ — pending implementation |
 | Breadboard complete     | ✅ [breadboarding.md](breadboarding.md) |
-| Spikes resolved (A2 ⚠️) | ❌                          |
+| Spikes resolved (A2)    | ✅ `spike-instagram-extraction.md` |
 | Ready to slice          | ✅ (V1 puede empezar sin spike A2) |
 
 
