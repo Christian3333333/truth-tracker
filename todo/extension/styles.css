@@ -57,6 +57,28 @@
   box-shadow: 0 10px 30px rgba(255, 133, 209, 0.35);
 }
 
+.tt-fab:disabled {
+  cursor: wait;
+}
+
+.tt-fab:disabled::before {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-right: 0.45rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  content: "";
+  animation: tt-spin 0.8s linear infinite;
+}
+
+@keyframes tt-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .tt-modal-backdrop {
   position: fixed;
   inset: 0;

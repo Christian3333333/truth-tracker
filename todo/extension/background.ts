@@ -8,7 +8,8 @@ import {
   type ExtensionMessage,
 } from "./lib/messages";
 import { chromeSessionStorage, getBackendUrl } from "./lib/storage";
-import { runManualVerification } from "./lib/verify-flow";
+import { runVerification } from "./lib/verify-flow";
+import type { VerifyRequestBody } from "./lib/types";
 
 const storage = chromeSessionStorage();
 
@@ -61,19 +62,17 @@ async function notifyActiveInstagram(
   await sendToInstagramTabs(message);
 }
 
-async function handleManualVerify(
-  transcript: string,
-  reelUrl?: string,
+async function handleVerification(
+  body: VerifyRequestBody,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const backendUrl = await getBackendUrl(storage);
   await notifyUi(createStatusChangedMessage("verifying"));
 
   try {
-    await runManualVerification({
+    await runVerification({
       storage,
-      transcript,
+      body,
       backendUrl,
-      reelUrl,
       notifyReportReady: async (report) => {
         await notifyActiveInstagram(createReportReadyMessage(report));
       },
@@ -87,13 +86,82 @@ async function handleManualVerify(
   }
 }
 
+async function ensureOffscreenDocument(): Promise<void> {
+  try {
+    await chrome.offscreen.createDocument({
+      url: "offscreen.html",
+      reasons: [chrome.offscreen.Reason.USER_MEDIA],
+      justification: "Grabar el audio del reel activo para transcribirlo.",
+    });
+  } catch {
+    // Chrome rejects a second create request while the document already exists.
+  }
+}
+
+async function captureActiveTabAudio(): Promise<string> {
+  const [tab] = await chrome.tabs.query({
+    active: true,
+    currentWindow: true,
+    url: ["https://www.instagram.com/*"],
+  });
+  if (tab?.id == null) {
+    throw new Error("Abre un reel de Instagram antes de verificar.");
+  }
+
+  await ensureOffscreenDocument();
+  const streamId = await chrome.tabCapture.getMediaStreamId({
+    targetTabId: tab.id,
+  });
+  const response = (await chrome.runtime.sendMessage({
+    type: "START_AUDIO_CAPTURE",
+    streamId,
+    durationMs: 60_000,
+  })) as { audioBase64?: unknown; error?: unknown };
+
+  if (typeof response.audioBase64 === "string") return response.audioBase64;
+  throw new Error(
+    typeof response.error === "string"
+      ? response.error
+      : "No se pudo capturar el audio del reel.",
+  );
+}
+
+async function handleAutoVerify(
+  transcript: string | undefined,
+  reelUrl: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    const body: VerifyRequestBody = transcript
+      ? { transcript, reelUrl }
+      : {
+          audioBase64: await captureActiveTabAudio(),
+          reelUrl,
+        };
+    return await handleVerification(body);
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Error al extraer el guión";
+    await notifyActiveInstagram(createVerifyErrorMessage(message));
+    await notifyActiveInstagram(createOpenManualModalMessage());
+    return { ok: false, error: message };
+  }
+}
+
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (!isExtensionMessage(message)) return;
 
   if (message.type === MessageType.MANUAL_VERIFY) {
-    void handleManualVerify(message.transcript, message.reelUrl).then(
+    void handleVerification({
+      transcript: message.transcript,
+      reelUrl: message.reelUrl,
+    }).then(
       sendResponse,
     );
+    return true;
+  }
+
+  if (message.type === MessageType.AUTO_VERIFY) {
+    void handleAutoVerify(message.transcript, message.reelUrl).then(sendResponse);
     return true;
   }
 

@@ -82,9 +82,24 @@ function buildSidePanelHtml(report) {
   `;
 }
 
+// extension/lib/caption-extraction.ts
+var MIN_TRANSCRIPT_LENGTH = 20;
+function normalizeCaption(value) {
+  return value.replace(/\s+/g, " ").trim();
+}
+function selectCaptionCandidate(candidates) {
+  const normalized = candidates.map(normalizeCaption).filter(Boolean);
+  const caption = normalized.reduce(
+    (longest, candidate) => candidate.length > longest.length ? candidate : longest,
+    ""
+  );
+  return caption.length >= MIN_TRANSCRIPT_LENGTH ? caption : null;
+}
+
 // extension/lib/messages.ts
 var MessageType = {
   MANUAL_VERIFY: "MANUAL_VERIFY",
+  AUTO_VERIFY: "AUTO_VERIFY",
   TRIGGER_VERIFY: "TRIGGER_VERIFY",
   REPORT_READY: "REPORT_READY",
   OPEN_MANUAL_MODAL: "OPEN_MANUAL_MODAL",
@@ -94,10 +109,13 @@ var MessageType = {
 function createManualVerifyMessage(transcript, reelUrl) {
   return { type: MessageType.MANUAL_VERIFY, transcript, reelUrl };
 }
+function createAutoVerifyMessage(reelUrl, transcript) {
+  return { type: MessageType.AUTO_VERIFY, reelUrl, transcript };
+}
 function isExtensionMessage(value) {
   if (!value || typeof value !== "object") return false;
   const type = value.type;
-  return type === MessageType.MANUAL_VERIFY || type === MessageType.TRIGGER_VERIFY || type === MessageType.REPORT_READY || type === MessageType.OPEN_MANUAL_MODAL || type === MessageType.STATUS_CHANGED || type === MessageType.VERIFY_ERROR;
+  return type === MessageType.MANUAL_VERIFY || type === MessageType.AUTO_VERIFY || type === MessageType.TRIGGER_VERIFY || type === MessageType.REPORT_READY || type === MessageType.OPEN_MANUAL_MODAL || type === MessageType.STATUS_CHANGED || type === MessageType.VERIFY_ERROR;
 }
 
 // extension/lib/types.ts
@@ -223,16 +241,85 @@ function openSidePanel(report) {
 }
 function mountFloatingButton() {
   const root = ensureRoot();
-  if (document.getElementById("truth-tracker-fab")) return;
-  const fab = document.createElement("button");
-  fab.id = "truth-tracker-fab";
-  fab.type = "button";
-  fab.className = "tt-fab";
-  fab.textContent = "Verificar";
-  fab.addEventListener("click", () => {
+  let fab = document.getElementById("truth-tracker-fab");
+  const video = findActiveReelVideo();
+  if (!video) {
+    fab?.remove();
+    return;
+  }
+  if (!fab) {
+    fab = document.createElement("button");
+    fab.id = "truth-tracker-fab";
+    fab.type = "button";
+    fab.className = "tt-fab";
+    fab.textContent = "Verificar";
+    fab.addEventListener("click", () => {
+      void handleVerifyFromReel(fab);
+    });
+    root.appendChild(fab);
+  }
+  const rect = video.getBoundingClientRect();
+  fab.style.right = `${Math.max(16, window.innerWidth - rect.right + 16)}px`;
+  fab.style.bottom = `${Math.max(16, window.innerHeight - rect.bottom + 16)}px`;
+}
+function findActiveReelVideo() {
+  const videos = Array.from(document.querySelectorAll("video"));
+  return videos.reduce((active, video) => {
+    const rect = video.getBoundingClientRect();
+    const visibleWidth = Math.max(
+      0,
+      Math.min(rect.right, window.innerWidth) - Math.max(rect.left, 0)
+    );
+    const visibleHeight = Math.max(
+      0,
+      Math.min(rect.bottom, window.innerHeight) - Math.max(rect.top, 0)
+    );
+    const visibleArea = visibleWidth * visibleHeight;
+    const activeRect = active?.getBoundingClientRect();
+    const activeArea = activeRect ? Math.max(
+      0,
+      Math.min(activeRect.right, window.innerWidth) - Math.max(activeRect.left, 0)
+    ) * Math.max(
+      0,
+      Math.min(activeRect.bottom, window.innerHeight) - Math.max(activeRect.top, 0)
+    ) : 0;
+    return visibleArea > activeArea ? video : active;
+  }, null);
+}
+function tryExtractCaptionsFromDom(video) {
+  const reelRoot = video.closest("article") ?? video.parentElement;
+  if (!reelRoot) return null;
+  const candidates = Array.from(
+    reelRoot.querySelectorAll(
+      '[aria-label*="caption" i], [aria-label*="audio" i], [aria-label*="subt" i]'
+    ),
+    (element) => element.textContent?.trim() || element.getAttribute("aria-label") || ""
+  );
+  return selectCaptionCandidate(candidates);
+}
+async function handleVerifyFromReel(fab) {
+  const video = findActiveReelVideo();
+  if (!video) {
+    showStatus("No se encontr\xF3 un reel activo. Int\xE9ntalo de nuevo.", "error");
+    return;
+  }
+  const transcript = tryExtractCaptionsFromDom(video);
+  fab.disabled = true;
+  fab.textContent = "Extrayendo\u2026";
+  showStatus(
+    transcript ? "Gui\xF3n encontrado. Verificando\u2026" : "No hay captions disponibles. Capturando audio\u2026",
+    "loading"
+  );
+  try {
+    await chrome.runtime.sendMessage(
+      createAutoVerifyMessage(location.href, transcript ?? void 0)
+    );
+  } catch {
+    fab.disabled = false;
+    fab.textContent = "Verificar";
+    showStatus("No se pudo extraer el gui\xF3n. Puedes pegarlo manualmente.", "error");
     openManualModal();
-  });
-  root.appendChild(fab);
+  }
 }
 chrome.runtime.onMessage.addListener((message) => {
   if (!isExtensionMessage(message)) return;
@@ -245,16 +332,39 @@ chrome.runtime.onMessage.addListener((message) => {
     return;
   }
   if (message.type === MessageType.STATUS_CHANGED) {
+    const fab = document.getElementById(
+      "truth-tracker-fab"
+    );
+    if (message.status === "extracting") {
+      showStatus("Extrayendo gui\xF3n\u2026", "loading");
+      if (fab) {
+        fab.disabled = true;
+        fab.textContent = "Extrayendo\u2026";
+      }
+    }
     if (message.status === "verifying") {
       showStatus("Verificando\u2026", "loading");
+      if (fab) fab.textContent = "Verificando\u2026";
     }
     return;
   }
   if (message.type === MessageType.VERIFY_ERROR) {
+    const fab = document.getElementById(
+      "truth-tracker-fab"
+    );
+    if (fab) {
+      fab.disabled = false;
+      fab.textContent = "Verificar";
+    }
     showStatus(message.error, "error");
   }
 });
 mountFloatingButton();
+window.addEventListener("scroll", mountFloatingButton, { passive: true });
+new MutationObserver(mountFloatingButton).observe(document.documentElement, {
+  childList: true,
+  subtree: true
+});
 void consumePendingReport(storage).then((report) => {
   if (report) openSidePanel(report);
 });

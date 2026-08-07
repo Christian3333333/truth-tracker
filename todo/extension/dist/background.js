@@ -1,6 +1,7 @@
 // extension/lib/messages.ts
 var MessageType = {
   MANUAL_VERIFY: "MANUAL_VERIFY",
+  AUTO_VERIFY: "AUTO_VERIFY",
   TRIGGER_VERIFY: "TRIGGER_VERIFY",
   REPORT_READY: "REPORT_READY",
   OPEN_MANUAL_MODAL: "OPEN_MANUAL_MODAL",
@@ -22,7 +23,7 @@ function createVerifyErrorMessage(error) {
 function isExtensionMessage(value) {
   if (!value || typeof value !== "object") return false;
   const type = value.type;
-  return type === MessageType.MANUAL_VERIFY || type === MessageType.TRIGGER_VERIFY || type === MessageType.REPORT_READY || type === MessageType.OPEN_MANUAL_MODAL || type === MessageType.STATUS_CHANGED || type === MessageType.VERIFY_ERROR;
+  return type === MessageType.MANUAL_VERIFY || type === MessageType.AUTO_VERIFY || type === MessageType.TRIGGER_VERIFY || type === MessageType.REPORT_READY || type === MessageType.OPEN_MANUAL_MODAL || type === MessageType.STATUS_CHANGED || type === MessageType.VERIFY_ERROR;
 }
 
 // extension/lib/types.ts
@@ -93,13 +94,12 @@ async function postVerify(backendUrl, body, fetchImpl = fetch) {
 }
 
 // extension/lib/verify-flow.ts
-async function runManualVerification(deps) {
+async function runVerification(deps) {
   const postVerify2 = deps.postVerify ?? postVerify;
   await setVerificationStatus(deps.storage, "verifying");
   try {
     const report = await postVerify2(deps.backendUrl, {
-      transcript: deps.transcript,
-      reelUrl: deps.reelUrl
+      ...deps.body
     });
     await persistReport(deps.storage, report);
     await setVerificationStatus(deps.storage, "idle");
@@ -154,15 +154,14 @@ async function notifyActiveInstagram(message) {
   }
   await sendToInstagramTabs(message);
 }
-async function handleManualVerify(transcript, reelUrl) {
+async function handleVerification(body) {
   const backendUrl = await getBackendUrl(storage);
   await notifyUi(createStatusChangedMessage("verifying"));
   try {
-    await runManualVerification({
+    await runVerification({
       storage,
-      transcript,
+      body,
       backendUrl,
-      reelUrl,
       notifyReportReady: async (report) => {
         await notifyActiveInstagram(createReportReadyMessage(report));
       }
@@ -174,12 +173,66 @@ async function handleManualVerify(transcript, reelUrl) {
     return { ok: false, error: message };
   }
 }
+async function ensureOffscreenDocument() {
+  try {
+    await chrome.offscreen.createDocument({
+      url: "offscreen.html",
+      reasons: [chrome.offscreen.Reason.USER_MEDIA],
+      justification: "Grabar el audio del reel activo para transcribirlo."
+    });
+  } catch {
+  }
+}
+async function captureActiveTabAudio() {
+  const [tab] = await chrome.tabs.query({
+    active: true,
+    currentWindow: true,
+    url: ["https://www.instagram.com/*"]
+  });
+  if (tab?.id == null) {
+    throw new Error("Abre un reel de Instagram antes de verificar.");
+  }
+  await ensureOffscreenDocument();
+  const streamId = await chrome.tabCapture.getMediaStreamId({
+    targetTabId: tab.id
+  });
+  const response = await chrome.runtime.sendMessage({
+    type: "START_AUDIO_CAPTURE",
+    streamId,
+    durationMs: 6e4
+  });
+  if (typeof response.audioBase64 === "string") return response.audioBase64;
+  throw new Error(
+    typeof response.error === "string" ? response.error : "No se pudo capturar el audio del reel."
+  );
+}
+async function handleAutoVerify(transcript, reelUrl) {
+  try {
+    const body = transcript ? { transcript, reelUrl } : {
+      audioBase64: await captureActiveTabAudio(),
+      reelUrl
+    };
+    return await handleVerification(body);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Error al extraer el gui\xF3n";
+    await notifyActiveInstagram(createVerifyErrorMessage(message));
+    await notifyActiveInstagram(createOpenManualModalMessage());
+    return { ok: false, error: message };
+  }
+}
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (!isExtensionMessage(message)) return;
   if (message.type === MessageType.MANUAL_VERIFY) {
-    void handleManualVerify(message.transcript, message.reelUrl).then(
+    void handleVerification({
+      transcript: message.transcript,
+      reelUrl: message.reelUrl
+    }).then(
       sendResponse
     );
+    return true;
+  }
+  if (message.type === MessageType.AUTO_VERIFY) {
+    void handleAutoVerify(message.transcript, message.reelUrl).then(sendResponse);
     return true;
   }
   if (message.type === MessageType.TRIGGER_VERIFY) {

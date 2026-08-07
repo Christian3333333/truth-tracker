@@ -8,9 +8,8 @@ import type { VerificationReport, VerifyRequestBody } from "./types";
 
 export interface VerifyFlowDeps {
   storage: ExtensionStorage;
-  transcript: string;
+  body: VerifyRequestBody;
   backendUrl: string;
-  reelUrl?: string;
   postVerify?: (
     backendUrl: string,
     body: VerifyRequestBody,
@@ -18,7 +17,7 @@ export interface VerifyFlowDeps {
   notifyReportReady: (report: VerificationReport) => Promise<void>;
 }
 
-export async function runManualVerification(
+export async function runVerification(
   deps: VerifyFlowDeps,
 ): Promise<VerificationReport> {
   const postVerify = deps.postVerify ?? defaultPostVerify;
@@ -26,8 +25,7 @@ export async function runManualVerification(
 
   try {
     const report = await postVerify(deps.backendUrl, {
-      transcript: deps.transcript,
-      reelUrl: deps.reelUrl,
+      ...deps.body,
     });
     await persistReport(deps.storage, report);
     await setVerificationStatus(deps.storage, "idle");
@@ -39,4 +37,14 @@ export async function runManualVerification(
     await setVerificationStatus(deps.storage, "error", message);
     throw error;
   }
+}
+
+export async function runManualVerification(
+  deps: Omit<VerifyFlowDeps, "body"> & { transcript: string; reelUrl?: string },
+): Promise<VerificationReport> {
+  const { transcript, reelUrl, ...flowDeps } = deps;
+  return runVerification({
+    ...flowDeps,
+    body: { transcript, reelUrl },
+  });
 }

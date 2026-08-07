@@ -1,5 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import { runManualVerification } from "@/extension/lib/verify-flow";
+import {
+  runManualVerification,
+  runVerification,
+} from "@/extension/lib/verify-flow";
 import {
   createMemoryStorage,
   readPersistedReport,
@@ -49,5 +52,23 @@ describe("runManualVerification", () => {
     const state = await storage.get(["verificationStatus", "verificationError"]);
     expect(state.verificationStatus).toBe("error");
     expect(String(state.verificationError)).toMatch(/backend caído/);
+  });
+
+  it("sends captured audio to the verification endpoint", async () => {
+    const storage = createMemoryStorage();
+    const postVerify = vi.fn(async () => SAN_MIGUEL_REPORT);
+
+    await runVerification({
+      storage,
+      body: { audioBase64: "YXVkaW8=", reelUrl: "https://instagram.com/reel/demo" },
+      backendUrl: "http://localhost:3000",
+      postVerify,
+      notifyReportReady: async () => undefined,
+    });
+
+    expect(postVerify).toHaveBeenCalledWith("http://localhost:3000", {
+      audioBase64: "YXVkaW8=",
+      reelUrl: "https://instagram.com/reel/demo",
+    });
   });
 });

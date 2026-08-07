@@ -9,6 +9,7 @@ await esbuild.build({
   entryPoints: [
     path.join(extensionDir, "background.ts"),
     path.join(extensionDir, "content.ts"),
+    path.join(extensionDir, "offscreen.ts"),
     path.join(extensionDir, "popup.ts"),
   ],
   outdir: path.join(extensionDir, "dist"),

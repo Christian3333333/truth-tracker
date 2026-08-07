@@ -3,7 +3,7 @@
   "name": "Truth Tracker",
   "version": "0.1.0",
   "description": "Verifica afirmaciones de reels de Instagram y muestra un informe en panel lateral.",
-  "permissions": ["storage", "activeTab", "tabs"],
+  "permissions": ["storage", "activeTab", "tabs", "tabCapture", "offscreen"],
   "host_permissions": [
     "https://www.instagram.com/*",
     "http://localhost/*",

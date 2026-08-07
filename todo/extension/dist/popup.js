@@ -1,6 +1,7 @@
 // extension/lib/messages.ts
 var MessageType = {
   MANUAL_VERIFY: "MANUAL_VERIFY",
+  AUTO_VERIFY: "AUTO_VERIFY",
   TRIGGER_VERIFY: "TRIGGER_VERIFY",
   REPORT_READY: "REPORT_READY",
   OPEN_MANUAL_MODAL: "OPEN_MANUAL_MODAL",
@@ -13,7 +14,7 @@ function createTriggerVerifyMessage() {
 function isExtensionMessage(value) {
   if (!value || typeof value !== "object") return false;
   const type = value.type;
-  return type === MessageType.MANUAL_VERIFY || type === MessageType.TRIGGER_VERIFY || type === MessageType.REPORT_READY || type === MessageType.OPEN_MANUAL_MODAL || type === MessageType.STATUS_CHANGED || type === MessageType.VERIFY_ERROR;
+  return type === MessageType.MANUAL_VERIFY || type === MessageType.AUTO_VERIFY || type === MessageType.TRIGGER_VERIFY || type === MessageType.REPORT_READY || type === MessageType.OPEN_MANUAL_MODAL || type === MessageType.STATUS_CHANGED || type === MessageType.VERIFY_ERROR;
 }
 
 // extension/lib/types.ts

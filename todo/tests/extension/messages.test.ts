@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  createAutoVerifyMessage,
   createManualVerifyMessage,
   createReportReadyMessage,
   createTriggerVerifyMessage,
@@ -20,6 +21,13 @@ describe("extension messages", () => {
 
     const trigger = createTriggerVerifyMessage();
     expect(trigger.type).toBe(MessageType.TRIGGER_VERIFY);
+
+    const auto = createAutoVerifyMessage(
+      "https://www.instagram.com/reel/demo",
+      "Guión detectado",
+    );
+    expect(auto.type).toBe(MessageType.AUTO_VERIFY);
+    expect(auto.transcript).toBe("Guión detectado");
   });
 
   it("rejects unknown payloads", () => {
