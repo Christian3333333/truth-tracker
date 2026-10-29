@@ -1,6 +1,6 @@
 # Truth Tracker
 
-Extensión de Chrome para verificar el guion de un Reel de Instagram. La persona activa la verificación, el guion sale del reel y un informe marca qué está bien sustentado, qué no, y qué medidas se proponen.
+Extensión de Chrome para verificar la veracidad de la información de un Reel de Instagram. La persona inicia la verificación, se obtiene el guion del reel y se genera un informe marca qué informaicón tiene sustento y qué no.
 
 El producto vive en `todo/`: el backend Next.js y la extensión Manifest V3. `goal.md` y `spec.md` guardan el objetivo y el detalle.
 
